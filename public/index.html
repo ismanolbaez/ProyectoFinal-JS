@@ -1,0 +1,424 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.14.0/css/all.css" integrity="sha384-HzLeBuhoNPvSl5KYnjx0BT+WB0QEEqLprO+NBkkk5gbc67FTaL7XIGa2w1L0Xbgc" crossorigin="anonymous">
+    <link rel="stylesheet" href="css/style.css">
+
+    <!-- JavaScript -->
+    <script src="https://www.gstatic.com/firebasejs/7.17.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.17.1/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.17.1/firebase-firestore.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.17.1/firebase-storage.js"></script>
+
+    <title>Instagram</title>
+    
+  </head>
+  <body>
+
+    <!-- Login de la aplicación -->
+    <div class="content-login">
+        <section class="login container d-flex justify-content-center">
+            <div class="col-4">
+                <img class="card-img" src="img/login.png" alt="" height="650">
+            </div>
+
+            <div class="d-flex col-5 d-flex flex-column mt-5">
+                <div class="bg-white border rounded mb-3">
+                    <form action="" class=" formulario-login p-5">
+                        <h1 class="text-center pt-3 pb-5">Instagram</h1>
+                        <input type="text" name="usuario" id="usuarioLogin" class="form-control mb-3" placeholder="Correo electronico">
+                        <input type="password" name="password" id="passwordLogin" class="form-control mb-4" placeholder="Contraseña">
+        
+                        <input type="button" value="Iniciar sesión" class="btn btn-dark form-control" onclick="accessAccount()">
+                    </form>
+                    <p class="text-center"><span class="enlaces" onclick="olvidePassword()">Olvidaste tu contraseña?</span></p>
+                </div>
+
+                <div class="crear-cuenta bg-white border rounded">
+                    <p class="p-3 text-center">¿No tienes una cuenta? <span class="enlaces" onclick="abrirRegistrarse()">Registrate</span></p>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- Formulario de Registro a la aplicación -->
+    <div class="content-registrarse d-none">
+        <section class="registro container d-flex justify-content-center">
+            <div class="d-flex col-6 d-flex flex-column mt-5">
+                <div class="bg-white border rounded mb-3">
+                    <form action="" class=" formulario-login p-5">
+                        <h1 class="text-center pt-3 pb-5">Instagram</h1>
+                        <input type="text" name="nombreUsuario" id="nombreUsuario" class="form-control mb-3" placeholder="Nombre">
+                        <input type="text" name="apellidosUsuario" id="apellidosUsuario" class="form-control mb-3" placeholder="Apellidos">
+                        <input type="email" name="emailUsuario" id="emailUsuario" class="form-control mb-3" placeholder="Correo electronico">
+                        <input type="password" name="passwordUsuario" id="passwordUsuario" class="form-control mb-4" placeholder="Contraseña">
+                        <input type="button" value="Registrarte" class="btn btn-dark form-control" onclick="createUsers()">
+                    </form>
+                    <p class="text-center p-3">Al registrarte, aceptas nuestras Condiciones, la Política de datos y la Política de cookies.</p>
+                </div>
+
+                <div class="crear-cuenta bg-white border rounded">
+                    <p class="p-3 text-center">¿Tienes una cuenta? <span class="enlaces" onclick="abrirLogin()">Inicia sesión</span></p>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- Inicio de la aplicación en uso -->
+    <div class="content-app d-none">
+      <header class="mb-4" id="contentHeader">
+          <div class="container ">
+              <nav class="navbar navbar-light bg-white">
+                  <a class="navbar-brand" style="font-family: 'Pacifico', cursive; cursor: pointer;" onclick="abrirInicio()"">Instagram</a>
+                  <form class="form-inline">
+                    <input class="form-control" type="search" id="buscarUsuario" placeholder="Buscar amigos" aria-label="Search">
+                    <a class="btn boton" href="#" role="button" onclick="abrirPerfilUsuario()">
+                      <i class="fas fa-search"></i>
+                    </a>
+                  </form>
+                  <div class="opciones d-flex">
+                    <div>
+                      <a class="btn boton" href="#" onclick="abrirInicio()" role="button">
+                        <i class="fas fa-home"></i>
+                      </a>
+                    </div>
+  
+                    <div>
+                      <a class="btn boton" href="#" role="button">
+                        <i class="fas fa-comments"></i>
+                      </a>
+                    </div>
+                    
+                    <div class="dropdown">
+                      <a class="btn boton dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <i class="far fa-user"></i>
+                      </a>                  
+                      <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                        <a class="dropdown-item" href="#" onclick="abrirPerfil()">Perfil</a>
+                        <a class="dropdown-item" href="#" onclick="abrirConfig()">Configuración</a>
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item" href="#" onclick="closeAccount()">Cerrar sesión</a>
+                      </div>
+                    </div>
+                  </div>
+                </nav>
+          </div>
+      </header>
+  
+      <div class="contenido container d-flex justify-content-around" id="sectionPublicaciones">
+          <div class="publicaciones col-8" id="contentPublicaciones">
+            
+          </div>
+          <div class="info-perfil col-3">
+            <div class="perfil">
+                <div class="d-flex flex-column justify-content-center">
+                    <div class="photoProfile text-center mb-3">
+                        <img src="" id="photoProfile" class="rounded-circle" alt="" width="120" height="120">
+                    </div>
+                    <div class="info-UseName text-center">
+                        <p id="userSesion"></p>
+                    </div>
+                </div>
+
+                <div class="anadir-publicaciones text-center">
+                    <button type="button" class="btn btn-dark" data-toggle="modal" data-target="#exampleModal" data-whatever="@mdo">Nueva publicación</button>
+
+                    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel">Añadir publicación</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <form>
+                            <div class="form-group">
+                                <label for="recipient-name" class="col-form-label">Imagen</label>
+                                <div class="custom-file">
+                                    <input type="file" class="custom-file-input" id="inputGroupFile" aria-describedby="inputGroupFileAddon01">
+                                    <label class="custom-file-label" for="inputGroupFile">Choose file</label>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="message-text" class="col-form-label">Descripción</label>
+                                <textarea class="form-control" id="descripcion-image"></textarea>
+                            </div>
+                            </form>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                            <button type="button" class="btn btn-secondary" onclick="addPicture()">Subir</button>
+                        </div>
+                        </div>
+                    </div>
+                    </div>
+                </div>
+            </div>
+          </div>
+      </div>
+
+      <div id="sectionPerfil" class="container d-none">
+        <div class="infoPerfil mb-3 d-flex justify-content-center">
+          <div class="card mb-3" style="max-width: 500px;">
+            <div class="d-flex">
+              <div class="col-4 rounded-circle imagenPerfil text-center">
+                <img src="" id="perfilFoto" class="card-img mb-3 rounded-circle" alt="..." alt="" width="120" height="120">
+                <button type="button" class="btn btn-dark" onclick="abrirConfig()" id="Editar">Editar <i class="fas fa-cog"></i></button>
+              </div>
+              <div class="perfilInformación">
+                <div class="card-body">
+                  <h5 class="card-title" id="userName"></h5>
+                  <p class="card-text"><small id="correoElectronico" class="text-muted"></small></p>
+                  <p class="card-text" id="biografia"></p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="publicacionesPerfil container" style="max-width: 1000px;">
+          <h5 class="text-center text-uppercase mb-3">publicaciones <i class="fas fa-images"></i></h5>
+
+          <div class="row row-cols-1 row-cols-md-3 border-top" id="fotosPerfil">
+          </div>
+  
+        </div>
+      </div>
+
+      <div class="container d-none" id="sectionConfig">
+        <div class="row">
+          <div class="col-3 bg-white border rounded p-0">
+            <div class="nav flex-column nav-pills" id="v-pills-tab" role="tablist" aria-orientation="vertical">
+              <a class="nav-link active" id="v-pills-home-tab" data-toggle="pill" href="#editPerfil" role="tab" aria-controls="v-pills-home" aria-selected="true">Editar perfil</a>
+              <a class="nav-link" id="v-pills-profile-tab" data-toggle="pill" href="#editContraseña" role="tab" aria-controls="v-pills-profile" aria-selected="false">Cambiar contraseña</a>
+            </div>
+          </div>
+          <div class="col-9 bg-white border rounded">
+            <div class="tab-content" id="v-pills-tabContent">
+              <div class="tab-pane fade show active" id="editPerfil" role="tabpanel" aria-labelledby="v-pills-home-tab">
+                <form class="pt-4 col-9">
+                  <div class="form-group row">
+                    <img src="" alt="..." class="rounded-circle col-sm-2 col-form-img" id="imgProfileConfirg">
+                    <div class="col-sm-10">
+                      <h5 id="userConfigPerfil"></h5>
+                      <span class="enlaces" onclick="eliminarFoto()">Eliminar foto</span>
+                    </div>
+                  </div>
+
+                  <div class="form-group row">
+                    <label for="inputFotoPerfil" class="col-sm-2 col-form-label">Foto de perfil</label>
+                    <div class="input-group col-sm-10">
+                      <div class="custom-file">
+                        <input type="file" class="custom-file-input" id="inputFotoPerfil" aria-describedby="inputGroupFileAddon04">
+                        <label class="custom-file-label" for="inputGroupFile04">Elija un archivo</label>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="form-group row">
+                    <label for="nombreConfig" class="col-sm-2 col-form-label">Nombres</label>
+                    <div class="col-sm-10">
+                      <input type="text" class="form-control" id="nombreConfig">
+                    </div>
+                  </div>
+
+                  <div class="form-group row">
+                    <label for="apellidosConfig" class="col-sm-2 col-form-label">Apellidos</label>
+                    <div class="col-sm-10">
+                      <input type="text" class="form-control" id="apellidosConfig">
+                    </div>
+                  </div>
+
+                  <div class="form-group row">
+                    <label for="biografiaConfig" class="col-sm-2 col-form-label">Presentación</label>
+                    <div class="col-sm-10">
+                      <textarea class="form-control" id="biografiaConfig"></textarea>
+                    </div>
+                  </div>
+                
+                  <div class="form-group">
+                    <div class="text-right">
+                      <button type="button" class="btn btn-primary bg-dark" onclick="editProfilePicture()">Guardar</button>
+                    </div>
+                  </div>
+                </form>
+              </div>
+              
+              <div class="tab-pane fade" id="editContraseña" role="tabpanel" aria-labelledby="v-pills-profile-tab">
+                <form class="pt-4 col-9">
+                  <div class="form-group row">
+                    <img src="" alt="..." class="rounded-circle col-sm-2 col-form-img" id="imgProfileConfirg2">
+                    <div class="col-sm-10">
+                      <h5 id="userConfigPass"></h5>
+                    </div>
+                  </div>
+
+                  <div class="form-group row">
+                    <label for="inputPassword2" class="col-sm-2 col-form-label">Contraseña nueva</label>
+                    <div class="col-sm-10">
+                      <input type="password" class="form-control" id="inputPassword2">
+                    </div>
+                  </div>
+
+                  <div class="form-group row">
+                    <label for="inputPassword3" class="col-sm-2 col-form-label">Confirmar contraseña nueva</label>
+                    <div class="col-sm-10">
+                      <input type="password" class="form-control" id="inputPassword3">
+                    </div>
+                  </div>
+                
+                  <div class="form-group">
+                    <div class="text-right">
+                      <button type="button" class="btn btn-primary bg-dark" onclick="newPasswoord()">Guardar</button>
+                    </div>
+                  </div>
+                </form>
+              </div>
+
+              </div>
+            </div>
+          </div>
+      </div>
+    </div>
+
+    <!-- Mensajes -->
+    <div class="modal fade" id="boxMesanjes" tabindex="-1">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="mensajeTitulo"></h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <p id="mensaje"></p>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal fade" id="postPerfil" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog container">
+        <div class="modal-content">
+          <div class="card-deck mb-5 bg-white border">
+            <div class="card bg-white">
+              <div class="imagenPost">
+                <img src="" id="picturePost" class="card-img-top" alt="..." style="max-width: 100%; width: auto; height: auto;">
+              </div>
+  
+              <div class="card-body">
+                <h3 class="card-title"><i class="far fa-heart"></i></h3>
+                <p class="card-text" id="">100 Me gusta</p>
+                <p class="card-text" ><span style="font-weight: bold;" id="usuarioPost"></span> <span id="descripcionPost"></span></p>
+                <div class="" style="height:115px; overflow-y: scroll;" id="postComentarios">
+                </div>
+                <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p>
+              </div>
+              
+              <div class="input-group mb-3">
+                <input type="text" class="form-control" id="textComentarioPost" name="" placeholder="Agregar un comentario..." aria-label="Recipient's username" aria-describedby="button-addon2">
+                <div class="input-group-append comentar">
+                  <button class="btn btn-outline-secondary" type="button" value="" id="btnComentarPost" onclick="addComentarioPost()">Publicar</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal fade" id="editarPostPerfil" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">New message</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <form>
+              <div class="form-group">
+                <label for="recipient-name" class="col-form-label">Recipient:</label>
+                <input type="text" class="form-control" id="recipient-name">
+              </div>
+              <div class="form-group">
+                <label for="message-text" class="col-form-label">Message:</label>
+                <textarea class="form-control" id="message-text"></textarea>
+              </div>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary">Actualizar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal fade" id="eliminarPost" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">Advertencia</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <span>Desea eliminar la publicación ?</span>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">No</button>
+            <button type="button" class="btn btn-danger" id="confirmarEliminar" onclick="eliminarPublicacion()">Si</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal fade" id="editarDescripcionPost" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">Editar publicación</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <form>
+              <div class="form-group">
+                <label for="message-text" class="col-form-label">Descripción</label>
+                <textarea class="form-control" id="descripcionActualizar"></textarea>
+              </div>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Salir</button>
+            <button type="button" class="btn btn-secondary" id="actualizarPost" onclick="editarPublicacion()">Actualizar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  
+
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+    <script src="js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
+    <script src="js/app.js"></script>
+  </body>
+</html>
